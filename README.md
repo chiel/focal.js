@@ -5,7 +5,11 @@ ensuring your images look great no matter what crop size is used.
 
 ![Focal.js #1](demo1.jpg)
 
+Preview set to 1920x720
+
 ![Focal.js #2](demo2.jpg)
+
+Preview set to 375x720
 
 
 ## Usage
@@ -41,6 +45,13 @@ Create a new instance of Focal.
 
 - `image` - The image to replace
 - `options` - Possible options listed below
+
+#### `focal.setPreview(width, height)`
+
+Set the preview dimensions
+
+- `width` - Width of the preview, passing null will clear the preview
+- `height` - Height of the preview
 
 
 ### Options
