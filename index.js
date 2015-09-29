@@ -39,10 +39,8 @@ Focal.prototype._build = function(){
 	var width = rect.right - rect.left;
 	var height = rect.bottom - rect.top;
 
-	this.max = {
-		x: width,
-		y: height
-	};
+	this.maxWidth = width;
+	this.maxHeight = height;
 
 	var wrap = document.createElement('div');
 	wrap.classList.add('focal');
@@ -68,8 +66,8 @@ Focal.prototype._build = function(){
 	this.overlay2 = overlay2;
 
 	var pointPos = this.pointPos = {
-		x: Math.round(this.options.focus.x * (this.max.x / 100)),
-		y: Math.round(this.options.focus.y * (this.max.y / 100))
+		x: Math.round(this.options.focus.x * (this.maxWidth / 100)),
+		y: Math.round(this.options.focus.y * (this.maxHeight / 100))
 	};
 
 	var point = document.createElement('div');
@@ -94,8 +92,8 @@ Focal.prototype._setEvents = function(){
 
 	var setPointer = function(e){
 		var newPos = {
-			x: Math.round(clamp(self.pointPos.x + (e.pageX - pointer.x), 0, self.max.x)),
-			y: Math.round(clamp(self.pointPos.y + (e.pageY - pointer.y), 0, self.max.y))
+			x: Math.round(clamp(self.pointPos.x + (e.pageX - pointer.x), 0, self.maxWidth)),
+			y: Math.round(clamp(self.pointPos.y + (e.pageY - pointer.y), 0, self.maxHeight))
 		};
 		self.point.style.transform = 'translate3d(' + newPos.x + 'px, ' + newPos.y + 'px, 0)';
 		return newPos;
@@ -112,7 +110,7 @@ Focal.prototype._setEvents = function(){
 		self.emit('dragend');
 
 		self.pointPos = setPointer(e);
-		self.emit('change', (100 / self.max.x) * self.pointPos.x, (100 / self.max.y) * self.pointPos.y);
+		self.emit('change', (100 / self.maxWidth) * self.pointPos.x, (100 / self.maxHeight) * self.pointPos.y);
 
 		document.body.removeEventListener('mousemove', mousemove);
 		document.body.removeEventListener('mouseup', mouseup);
@@ -151,18 +149,18 @@ Focal.prototype.setPreview = function(width, height){
 	this.wrap.classList.add('focal--has-preview');
 
 	var ratio;
-	if (width < this.max.x && height < this.max.y){
-		ratio = this.max.x / width;
+	if (width < this.maxWidth && height < this.maxHeight){
+		ratio = this.maxWidth / width;
 		width *= ratio;
 		height *= ratio;
 	}
-	if (width > this.max.x){
-		ratio = this.max.x / width;
+	if (width > this.maxWidth){
+		ratio = this.maxWidth / width;
 		width *= ratio;
 		height *= ratio;
 	}
-	if (height > this.max.y){
-		ratio = this.max.y / height;
+	if (height > this.maxHeight){
+		ratio = this.maxHeight / height;
 		width *= ratio;
 		height *= ratio;
 	}
@@ -190,25 +188,25 @@ Focal.prototype._adjustPreview = function(focus){
 	if (x < 0){
 		x = 0;
 	}
-	if ((x + width) > this.max.x){
-		x = this.max.x - width;
+	if ((x + width) > this.maxWidth){
+		x = this.maxWidth - width;
 	}
 
 	if (y < 0){
 		y = 0;
 	}
-	if ((y + height) > this.max.y){
-		y = this.max.y - height;
+	if ((y + height) > this.maxHeight){
+		y = this.maxHeight - height;
 	}
 
 	this.preview.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
 
-	var isLandscape = width === this.max.x;
+	var isLandscape = width === this.maxWidth;
 	if (isLandscape){
-		this.overlay1.style.transform = 'translate3d(0, ' + (y - this.max.y) + 'px, 0)';
+		this.overlay1.style.transform = 'translate3d(0, ' + (y - this.maxHeight) + 'px, 0)';
 		this.overlay2.style.transform = 'translate3d(0, ' + (y + height) + 'px, 0)';
 	} else{
-		this.overlay1.style.transform = 'translate3d(' + (x - this.max.x) + 'px, 0, 0)';
+		this.overlay1.style.transform = 'translate3d(' + (x - this.maxWidth) + 'px, 0, 0)';
 		this.overlay2.style.transform = 'translate3d(' + (x + width) + 'px, 0, 0)';
 	}
 
