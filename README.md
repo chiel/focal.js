@@ -43,6 +43,18 @@ var focal = new Focal(img);
 ```
 
 
+### Styles
+
+In addition to this, you'll also want to include the `focal.css` file. This
+includes some fairly basic styles which are required.
+
+Focal utilises [BEM][bem]-style selectors to ensure low specificity, making it
+easy to adjust the styling to your needs. Despite this, including the base
+styles is recommended.
+
+[bem]: https://en.bem.info/
+
+
 ### API
 
 #### `focal = new Focal(image[, options])`
