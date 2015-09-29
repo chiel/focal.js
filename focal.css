@@ -1,5 +1,6 @@
 .focal {
 	overflow: hidden;
+	position: relative;
 }
 
 .focal__focus {
