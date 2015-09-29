@@ -16,6 +16,10 @@ var mixIn = require('mout/object/mixIn');
 var Focal = function(img, options){
 	this.img = img;
 	this.options = deepFillIn(options || {}, Focal.defaults);
+	this.currentCoords = {
+		x: this.options.focus.x,
+		y: this.options.focus.y
+	};
 	this._build();
 };
 
@@ -110,7 +114,16 @@ Focal.prototype._setEvents = function(){
 		self.emit('dragend');
 
 		self.pointPos = setPointer(e);
-		self.emit('change', (100 / self.maxWidth) * self.pointPos.x, (100 / self.maxHeight) * self.pointPos.y);
+
+		var coords = {
+			x: (100 / self.maxWidth) * self.pointPos.x,
+			y: (100 / self.maxHeight) * self.pointPos.y
+		};
+
+		if (coords.x !== self.currentCoords.x || coords.y !== self.currentCoords.y){
+			this.currentCoords = coords;
+			self.emit('change', coords.x, coords.y);
+		}
 
 		document.body.removeEventListener('mousemove', mousemove);
 		document.body.removeEventListener('mouseup', mouseup);
