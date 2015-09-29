@@ -111,6 +111,8 @@ Focal.prototype._setEvents = function(){
 	var mouseup = function(e){
 		e.preventDefault();
 		e.stopPropagation();
+
+		self.wrap.classList.remove('focal--dragging');
 		self.emit('dragend');
 
 		self.pointPos = setPointer(e);
@@ -132,6 +134,8 @@ Focal.prototype._setEvents = function(){
 	this.point.addEventListener('mousedown', function(e){
 		e.stopPropagation();
 		e.preventDefault();
+
+		self.wrap.classList.add('focal--dragging');
 		self.emit('dragstart');
 
 		dragging = true;
