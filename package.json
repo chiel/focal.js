@@ -5,9 +5,12 @@
   "author": "chielkunkels",
   "license": "MIT",
   "scripts": {
-    "build": "browserify -s Focal index.js > dist/focal.js"
+    "build": "mkdir -p dist && browserify -s Focal index.js > dist/focal.js"
   },
   "dependencies": {
     "mout": "^0.11.0"
+  },
+  "devDependencies": {
+    "browserify": "^11.2.0"
   }
 }

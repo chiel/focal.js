@@ -20,7 +20,13 @@ Installation is done through [npm][npm].
 $ npm install --save focal.js
 ```
 
+Once installed, you can also create a standalone build with `npm run build`.
+This will use [browserify][browserify] to create a build and put it at
+`dist/focal.js`, this file can simply be included in your page after which the
+`Focal` variable will be globally available.
+
 [npm]: https://www.npmjs.com/
+[browserify]: http://browserify.org/
 
 
 ### Basic usage
