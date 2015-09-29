@@ -1,0 +1,13 @@
+{
+  "name": "focal.js",
+  "version": "0.1.0",
+  "description": "Helps you define the focal point for images",
+  "author": "chielkunkels",
+  "license": "MIT",
+  "scripts": {
+    "build": "browserify -s Focal index.js > dist/focal.js"
+  },
+  "dependencies": {
+    "mout": "^0.11.0"
+  }
+}

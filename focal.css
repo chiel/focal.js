@@ -1,0 +1,37 @@
+.focal {
+	overflow: hidden;
+}
+
+.focal__focus {
+	width: 48px;
+	height: 48px;
+	margin: -24px 0 0 -24px;
+	border: 2px solid rgba(#000, .7);
+	border-radius: 50%;
+	background: rgba(#fff, .5);
+	cursor: grab;
+}
+
+.focal__preview {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.focal__overlay {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(#000, .75);
+}
+
+.focal--has-preview .focal__preview {
+	display: block;
+}
+.focal--has-preview .focal__overlay {
+	display: block;
+}
