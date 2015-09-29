@@ -16,6 +16,9 @@ Installation is done through [npm][npm].
 $ npm install --save focal.js
 ```
 
+[npm]: https://www.npmjs.com/
+
+
 ### Basic usage
 
 ```html
