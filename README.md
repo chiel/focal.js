@@ -83,6 +83,20 @@ Set the preview dimensions
 Focal utilises node's EventEmitter so you can use `.on` to register for the
 events listed below:
 
-- `dragstart` - Fired when the the user presses down on the focus drag
-- `dragend` - Fired when the user releases the focus drag
-- `change` - Fired when the focus has been changed
+#### `dragstart`
+
+Fired when the the user presses down on the focus drag.
+
+#### `dragend`
+
+Fired when the user releases the focus drag.
+
+#### `change`
+
+Fired when the focus has been changed.
+
+```js
+focal.on('change', function(x, y){
+  // x and y are percentages, between 0 and 100
+});
+```
