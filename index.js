@@ -97,6 +97,7 @@ Focal.prototype._build = function() {
  */
 Focal.prototype._setEvents = function() {
 	this.point.addEventListener('mousedown', this.bound.dragstart);
+	this.point.addEventListener('touchstart', this.bound.dragstart);
 };
 
 /**
@@ -108,11 +109,13 @@ Focal.prototype._dragstart = function(e) {
 	e.stopPropagation();
 	e.preventDefault();
 
-	this.startCoords = { x: e.pageX, y: e.pageY };
+	this.startCoords = this._getPointer(e);
 	this.wrap.classList.add('focal--dragging');
 
 	document.body.addEventListener('mousemove', this.bound.drag);
+	document.body.addEventListener('touchmove', this.bound.drag);
 	document.body.addEventListener('mouseup', this.bound.dragend);
+	document.body.addEventListener('touchend', this.bound.dragend);
 
 	this.emit('dragstart');
 };
@@ -123,7 +126,8 @@ Focal.prototype._dragstart = function(e) {
  * @param {Event} e
  */
 Focal.prototype._drag = function(e) {
-	var pos = this._calculatePos(e.pageX - this.startCoords.x, e.pageY - this.startCoords.y);
+	var pointer = this._getPointer(e);
+	var pos = this._calculatePos(pointer.x - this.startCoords.x, pointer.y - this.startCoords.y);
 	this._setPos(pos.x, pos.y);
 	this._adjustPreview(pos);
 
@@ -141,7 +145,8 @@ Focal.prototype._dragend = function(e) {
 
 	this.wrap.classList.remove('focal--dragging');
 
-	var pos = this._calculatePos(e.pageX - this.startCoords.x, e.pageY - this.startCoords.y);
+	var pointer = this._getPointer(e);
+	var pos = this._calculatePos(pointer.x - this.startCoords.x, pointer.y - this.startCoords.y);
 	this._setPos(pos.x, pos.y);
 	this._adjustPreview(pos);
 	this.pointPos = pos;
@@ -153,9 +158,25 @@ Focal.prototype._dragend = function(e) {
 	}
 
 	document.body.removeEventListener('mousemove', this.bound.drag);
+	document.body.removeEventListener('touchmove', this.bound.drag);
 	document.body.removeEventListener('mouseup', this.bound.dragend);
+	document.body.removeEventListener('touchend', this.bound.dragend);
 
 	this.emit('dragend');
+};
+
+/**
+ * Get "pointer" position from event
+ *
+ * @param {Event} e
+ */
+Focal.prototype._getPointer = function(e) {
+	if (e.touches || e.changedTouches) {
+		var t = e.touches[0] || e.changedTouches[0];
+		return { x: t.pageX, y: t.pageY };
+	}
+
+	return { x: e.pageX, y: e.pageY };
 };
 
 /**
