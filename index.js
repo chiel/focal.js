@@ -149,11 +149,7 @@ Focal.prototype._dragend = function(e){
 	this._adjustPreview(pos);
 	this.pointPos = pos;
 
-	var coords = {
-		x: (100 / this.maxWidth) * this.pointPos.x,
-		y: (100 / this.maxHeight) * this.pointPos.y
-	};
-
+	var coords = this._posToCoords(pos.x, pos.y);
 	if (coords.x !== this.currentCoords.x || coords.y !== this.currentCoords.y){
 		this.currentCoords = coords;
 		this.emit('change', coords.x, coords.y);
@@ -161,6 +157,21 @@ Focal.prototype._dragend = function(e){
 
 	document.body.removeEventListener('mousemove', this.bound.drag);
 	document.body.removeEventListener('mouseup', this.bound.dragend);
+};
+
+/**
+ * Convert pixel-based position to percent-based coords
+ *
+ * @param {Number} x
+ * @param {Number} y
+ *
+ * @return {Object}
+ */
+Focal.prototype._posToCoords = function(x, y){
+	return {
+		x: (100 / this.maxWidth) * x,
+		y: (100 / this.maxHeight) * y
+	};
 };
 
 /**
