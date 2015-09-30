@@ -88,8 +88,6 @@ Focal.prototype._build = function(){
 	this.point = point;
 
 	this.img.parentNode.replaceChild(wrap, this.img);
-	wrap.getBoundingClientRect();
-	wrap.classList.add('is-loaded');
 
 	this._setEvents();
 };
