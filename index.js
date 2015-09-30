@@ -142,7 +142,6 @@ Focal.prototype._dragend = function(e){
 	e.stopPropagation();
 
 	this.wrap.classList.remove('focal--dragging');
-	this.emit('dragend');
 
 	var pos = this._calculatePos(e.pageX - this.startCoords.x, e.pageY - this.startCoords.y);
 	this._setPos(pos.x, pos.y);
@@ -157,6 +156,8 @@ Focal.prototype._dragend = function(e){
 
 	document.body.removeEventListener('mousemove', this.bound.drag);
 	document.body.removeEventListener('mouseup', this.bound.dragend);
+
+	this.emit('dragend');
 };
 
 /**
