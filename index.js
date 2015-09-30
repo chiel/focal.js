@@ -13,7 +13,7 @@ var mixIn = require('mout/object/mixIn');
  * @param {Number} options.focus.x - Percentage, between 0 and 100
  * @param {Number} options.focus.y - Percentage, between 0 and 100
  */
-var Focal = function(img, options){
+var Focal = function(img, options) {
 	this.img = img;
 	this.options = deepFillIn(options || {}, Focal.defaults);
 	this.currentCoords = {
@@ -45,7 +45,7 @@ Focal.defaults = {
 /**
  * Build elements and replace image in the dom
  */
-Focal.prototype._build = function(){
+Focal.prototype._build = function() {
 	var rect = this.img.getBoundingClientRect();
 	var width = rect.right - rect.left;
 	var height = rect.bottom - rect.top;
@@ -95,7 +95,7 @@ Focal.prototype._build = function(){
 /**
  * Set events to drag the point around
  */
-Focal.prototype._setEvents = function(){
+Focal.prototype._setEvents = function() {
 	this.point.addEventListener('mousedown', this.bound.dragstart);
 };
 
@@ -104,7 +104,7 @@ Focal.prototype._setEvents = function(){
  *
  * @param {Event} e
  */
-Focal.prototype._dragstart = function(e){
+Focal.prototype._dragstart = function(e) {
 	e.stopPropagation();
 	e.preventDefault();
 
@@ -122,7 +122,7 @@ Focal.prototype._dragstart = function(e){
  *
  * @param {Event} e
  */
-Focal.prototype._drag = function(e){
+Focal.prototype._drag = function(e) {
 	var pos = this._calculatePos(e.pageX - this.startCoords.x, e.pageY - this.startCoords.y);
 	this._setPos(pos.x, pos.y);
 	this._adjustPreview(pos);
@@ -135,7 +135,7 @@ Focal.prototype._drag = function(e){
  *
  * @param {Event} e
  */
-Focal.prototype._dragend = function(e){
+Focal.prototype._dragend = function(e) {
 	e.preventDefault();
 	e.stopPropagation();
 
@@ -147,7 +147,7 @@ Focal.prototype._dragend = function(e){
 	this.pointPos = pos;
 
 	var coords = this._posToCoords(pos.x, pos.y);
-	if (coords.x !== this.currentCoords.x || coords.y !== this.currentCoords.y){
+	if (coords.x !== this.currentCoords.x || coords.y !== this.currentCoords.y) {
 		this.currentCoords = coords;
 		this.emit('change', coords.x, coords.y);
 	}
@@ -166,7 +166,7 @@ Focal.prototype._dragend = function(e){
  *
  * @return {Object}
  */
-Focal.prototype._posToCoords = function(x, y){
+Focal.prototype._posToCoords = function(x, y) {
 	return {
 		x: (100 / this.maxWidth) * x,
 		y: (100 / this.maxHeight) * y
@@ -178,7 +178,7 @@ Focal.prototype._posToCoords = function(x, y){
  *
  * @return {Object}
  */
-Focal.prototype._calculatePos = function(dX, dY){
+Focal.prototype._calculatePos = function(dX, dY) {
 	return {
 		x: Math.round(clamp(this.pointPos.x + dX, 0, this.maxWidth)),
 		y: Math.round(clamp(this.pointPos.y + dY, 0, this.maxHeight))
@@ -191,7 +191,7 @@ Focal.prototype._calculatePos = function(dX, dY){
  * @param {Number} x
  * @param {Numver} y
  */
-Focal.prototype._setPos = function(x, y){
+Focal.prototype._setPos = function(x, y) {
 	this.point.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
 };
 
@@ -203,11 +203,11 @@ Focal.prototype._setPos = function(x, y){
  * @param {Number} width
  * @param {Number} height
  */
-Focal.prototype.setPreview = function(width, height){
+Focal.prototype.setPreview = function(width, height) {
 	width = parseInt(width, 10);
 	height = parseInt(height, 10);
 
-	if (!width || !height || isNaN(width || isNaN(height))){
+	if (!width || !height || isNaN(width || isNaN(height))) {
 		this.wrap.classList.remove('focal--has-preview');
 		return;
 	}
@@ -215,17 +215,17 @@ Focal.prototype.setPreview = function(width, height){
 	this.wrap.classList.add('focal--has-preview');
 
 	var ratio;
-	if (width < this.maxWidth && height < this.maxHeight){
+	if (width < this.maxWidth && height < this.maxHeight) {
 		ratio = this.maxWidth / width;
 		width *= ratio;
 		height *= ratio;
 	}
-	if (width > this.maxWidth){
+	if (width > this.maxWidth) {
 		ratio = this.maxWidth / width;
 		width *= ratio;
 		height *= ratio;
 	}
-	if (height > this.maxHeight){
+	if (height > this.maxHeight) {
 		ratio = this.maxHeight / height;
 		width *= ratio;
 		height *= ratio;
@@ -245,33 +245,33 @@ Focal.prototype.setPreview = function(width, height){
 /**
  * Adjust preview positioning
  */
-Focal.prototype._adjustPreview = function(focus){
+Focal.prototype._adjustPreview = function(focus) {
 	var width = this.previewWidth;
 	var height = this.previewHeight;
 	var x = focus.x - (width / 2);
 	var y = focus.y - (height / 2);
 
-	if (x < 0){
+	if (x < 0) {
 		x = 0;
 	}
-	if ((x + width) > this.maxWidth){
+	if ((x + width) > this.maxWidth) {
 		x = this.maxWidth - width;
 	}
 
-	if (y < 0){
+	if (y < 0) {
 		y = 0;
 	}
-	if ((y + height) > this.maxHeight){
+	if ((y + height) > this.maxHeight) {
 		y = this.maxHeight - height;
 	}
 
 	this.preview.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
 
 	var isLandscape = width === this.maxWidth;
-	if (isLandscape){
+	if (isLandscape) {
 		this.overlay1.style.transform = 'translate3d(0, ' + (y - this.maxHeight) + 'px, 0)';
 		this.overlay2.style.transform = 'translate3d(0, ' + (y + height) + 'px, 0)';
-	} else{
+	} else {
 		this.overlay1.style.transform = 'translate3d(' + (x - this.maxWidth) + 'px, 0, 0)';
 		this.overlay2.style.transform = 'translate3d(' + (x + width) + 'px, 0, 0)';
 	}
