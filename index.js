@@ -27,7 +27,7 @@ var Focal = function(img, options) {
 		dragend: this._dragend.bind(this)
 	};
 
-	this._build();
+	this.attach();
 };
 
 require('util').inherits(Focal, require('events').EventEmitter);
@@ -40,6 +40,32 @@ Focal.defaults = {
 		x: 50,
 		y: 50
 	}
+};
+
+/**
+ * Attach focal to the dom
+ */
+Focal.prototype.attach = function() {
+	this._build();
+	this.img.parentNode.replaceChild(this.wrap, this.img);
+	this.point.addEventListener('mousedown', this.bound.dragstart);
+	this.point.addEventListener('touchstart', this.bound.dragstart);
+};
+
+/**
+ * Detach focal from the dom
+ */
+Focal.prototype.detach = function() {
+	this.wrap.parentNode.replaceChild(this.img, this.wrap);
+
+	this.point.removeEventListener('mousedown', this.bound.dragstart);
+	this.point.removeEventListener('touchstart', this.bound.dragstart);
+
+	delete this.wrap;
+	delete this.preview;
+	delete this.overlay1;
+	delete this.overlay2;
+	delete this.point;
 };
 
 /**
@@ -86,18 +112,6 @@ Focal.prototype._build = function() {
 	point.style.transform = 'translate3d(' + pointPos.x + 'px, ' + pointPos.y + 'px, 0)';
 	wrap.appendChild(point);
 	this.point = point;
-
-	this.img.parentNode.replaceChild(wrap, this.img);
-
-	this._setEvents();
-};
-
-/**
- * Set events to drag the point around
- */
-Focal.prototype._setEvents = function() {
-	this.point.addEventListener('mousedown', this.bound.dragstart);
-	this.point.addEventListener('touchstart', this.bound.dragstart);
 };
 
 /**
