@@ -128,6 +128,8 @@ Focal.prototype._drag = function(e){
 	var pos = this._calculatePos(e.pageX - this.startCoords.x, e.pageY - this.startCoords.y);
 	this._setPos(pos.x, pos.y);
 	this._adjustPreview(pos);
+
+	this.emit('drag');
 };
 
 /**
