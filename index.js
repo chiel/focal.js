@@ -20,6 +20,13 @@ var Focal = function(img, options){
 		x: this.options.focus.x,
 		y: this.options.focus.y
 	};
+
+	this.bound = {
+		dragstart: this._dragstart.bind(this),
+		drag: this._drag.bind(this),
+		dragend: this._dragend.bind(this)
+	};
+
 	this._build();
 };
 
@@ -91,59 +98,89 @@ Focal.prototype._build = function(){
  * Set events to drag the point around
  */
 Focal.prototype._setEvents = function(){
-	var self = this;
-	var dragging, pointer;
+	this.point.addEventListener('mousedown', this.bound.dragstart);
+};
 
-	var setPointer = function(e){
-		var newPos = {
-			x: Math.round(clamp(self.pointPos.x + (e.pageX - pointer.x), 0, self.maxWidth)),
-			y: Math.round(clamp(self.pointPos.y + (e.pageY - pointer.y), 0, self.maxHeight))
-		};
-		self.point.style.transform = 'translate3d(' + newPos.x + 'px, ' + newPos.y + 'px, 0)';
-		return newPos;
+/**
+ * Handle events that cause drag to start
+ *
+ * @param {Event} e
+ */
+Focal.prototype._dragstart = function(e){
+	e.stopPropagation();
+	e.preventDefault();
+
+	this.startCoords = { x: e.pageX, y: e.pageY };
+	this.wrap.classList.add('focal--dragging');
+
+	document.body.addEventListener('mousemove', this.bound.drag);
+	document.body.addEventListener('mouseup', this.bound.dragend);
+
+	this.emit('dragstart');
+};
+
+/**
+ * Handle events that cause drag
+ *
+ * @param {Event} e
+ */
+Focal.prototype._drag = function(e){
+	var pos = this._calculatePos(e.pageX - this.startCoords.x, e.pageY - this.startCoords.y);
+	this._setPos(pos.x, pos.y);
+	this._adjustPreview(pos);
+};
+
+/**
+ * Handle events that cause drag to end
+ *
+ * @param {Event} e
+ */
+Focal.prototype._dragend = function(e){
+	e.preventDefault();
+	e.stopPropagation();
+
+	this.wrap.classList.remove('focal--dragging');
+	this.emit('dragend');
+
+	var pos = this._calculatePos(e.pageX - this.startCoords.x, e.pageY - this.startCoords.y);
+	this._setPos(pos.x, pos.y);
+	this._adjustPreview(pos);
+	this.pointPos = pos;
+
+	var coords = {
+		x: (100 / this.maxWidth) * this.pointPos.x,
+		y: (100 / this.maxHeight) * this.pointPos.y
 	};
 
-	var mousemove = function(e){
-		var point = setPointer(e);
-		self._adjustPreview(point);
+	if (coords.x !== this.currentCoords.x || coords.y !== this.currentCoords.y){
+		this.currentCoords = coords;
+		this.emit('change', coords.x, coords.y);
+	}
+
+	document.body.removeEventListener('mousemove', this.bound.drag);
+	document.body.removeEventListener('mouseup', this.bound.dragend);
+};
+
+/**
+ * Calculate focus position based on given delta
+ *
+ * @return {Object}
+ */
+Focal.prototype._calculatePos = function(dX, dY){
+	return {
+		x: Math.round(clamp(this.pointPos.x + dX, 0, this.maxWidth)),
+		y: Math.round(clamp(this.pointPos.y + dY, 0, this.maxHeight))
 	};
+};
 
-	var mouseup = function(e){
-		e.preventDefault();
-		e.stopPropagation();
-
-		self.wrap.classList.remove('focal--dragging');
-		self.emit('dragend');
-
-		self.pointPos = setPointer(e);
-
-		var coords = {
-			x: (100 / self.maxWidth) * self.pointPos.x,
-			y: (100 / self.maxHeight) * self.pointPos.y
-		};
-
-		if (coords.x !== self.currentCoords.x || coords.y !== self.currentCoords.y){
-			this.currentCoords = coords;
-			self.emit('change', coords.x, coords.y);
-		}
-
-		document.body.removeEventListener('mousemove', mousemove);
-		document.body.removeEventListener('mouseup', mouseup);
-	};
-
-	this.point.addEventListener('mousedown', function(e){
-		e.stopPropagation();
-		e.preventDefault();
-
-		self.wrap.classList.add('focal--dragging');
-		self.emit('dragstart');
-
-		dragging = true;
-		pointer = { x: e.pageX, y: e.pageY };
-
-		document.body.addEventListener('mousemove', mousemove);
-		document.body.addEventListener('mouseup', mouseup);
-	});
+/**
+ * Set focus position
+ *
+ * @param {Number} x
+ * @param {Numver} y
+ */
+Focal.prototype._setPos = function(x, y){
+	this.point.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
 };
 
 /**
