@@ -46,10 +46,18 @@ Focal.defaults = {
  * Attach focal to the dom
  */
 Focal.prototype.attach = function() {
-	this._build();
-	this.img.parentNode.replaceChild(this.wrap, this.img);
-	this.point.addEventListener('mousedown', this.bound.dragstart);
-	this.point.addEventListener('touchstart', this.bound.dragstart);
+	var _attach = function() {
+		this._build();
+		this.img.parentNode.replaceChild(this.wrap, this.img);
+		this.point.addEventListener('mousedown', this.bound.dragstart);
+		this.point.addEventListener('touchstart', this.bound.dragstart);
+	};
+
+	if (this.img.complete) {
+		return _attach.bind(this)();
+	}
+
+	this.img.onload = _attach.bind(this);
 };
 
 /**
