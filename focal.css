@@ -10,6 +10,8 @@
 	border: 2px solid rgba(0, 0, 0, .7);
 	border-radius: 50%;
 	background: rgba(255, 255, 255, .5);
+	cursor: -webkit-grab;
+	cursor: -moz-grab;
 	cursor: grab;
 }
 
